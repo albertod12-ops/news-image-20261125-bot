@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Front page for Wednesday 25 November 2026 — v1.1 (sum 25).
+"""Front page for Wednesday 25 November 2026 — v1.2 (sum 25).
 
 Built from the standing news-image template (Sum 23 v3.8):
 same layout, design system and geometry; only the content is
@@ -9,9 +9,11 @@ Wednesday 25 November 2026, checked live against the wires
 Yonhap, ABC, DW and others). Stories that belong to an earlier
 day are named in DATE CHECK, not drawn.
 
-v1.1: the masthead word "Wednesday" is set in NotoSerifDisplay
-Medium with no stroke — about half the stem weight of the
-Black + 2px stroke used for the rest of the date (user 09:39 WIB).
+v1.2: masthead restored to a single uniform line (v1.1 wrongly
+split it — user 09:52 WIB: the whole "Wednesday 25 November
+2026" is one line, thin the WHOLE line, not just "Wednesday").
+Whole line now in NotoSerifDisplay Bold + 1px stroke, about 4/5
+the stem weight of v1's Black + 2px stroke.
 
 The pictures are flat vector shapes drawn here, the words
 are written here; nothing is photographed, pasted, or
@@ -77,10 +79,10 @@ class TY:
     # this system; size 88 gives an 86px ink height, matching
     # bagarte's masthead (86px), when squeezed to 996 wide.
     mast = _load("NotoSerifDisplay-Black.ttf", 88, NOTO)
-    # v1.1: lighter masthead face for "Wednesday" only — Medium
-    # (500) with no stroke, about half the stem weight of
-    # Black (900) + 2px stroke (user 09:39 WIB).
-    mastthin = _load("NotoSerifDisplay-Medium.ttf", 88, NOTO)
+    # v1.2: the whole masthead line at 4/5 the thickness of v1's
+    # Black + 2px stroke — Bold (700) with a 1px stroke
+    # (user 09:52 WIB: thin the whole line, not just "Wednesday").
+    mastbold = _load("NotoSerifDisplay-Bold.ttf", 88, NOTO)
     kick = _load("NotoSans-Black.ttf", 10, NOTO)
     # v3.5: the red kicker is the ONLY bold serif besides the
     # masthead — LiberationSerif-Bold 23, stretched to fill the
@@ -1197,22 +1199,15 @@ def build():
     # horizontally to 996px so its ink top sits at 24 (ink 24-110,
     # 86px tall, matching bagarte). ----
     title = "Wednesday 25 November 2026"
-    # v1.1: "Wednesday" is half as thick as the rest of the date
-    # (user 09:39 WIB): the first word is set in Medium with no
-    # stroke, the rest stays in Black + 2px stroke.
-    wday = "Wednesday"
-    rest = " 25 November 2026"
-    w1 = int(d.textlength(wday, font=TY.mastthin))
-    w2 = int(d.textlength(rest, font=TY.mast))
-    lw = w1 + w2 + 12
+    # v1.2: single uniform line again (v1.1 wrongly split it —
+    # user 09:52 WIB: the whole line is one line). The whole line
+    # is set in Bold + 1px stroke, about 4/5 the thickness of
+    # v1's Black + 2px stroke.
+    lw = int(d.textlength(title, font=TY.mastbold)) + 12
     layer = Image.new("RGBA", (lw, 150), (0, 0, 0, 0))
     lt = ImageDraw.Draw(layer)
-    lt.text((4, 0), wday, font=TY.mastthin, fill=BLACK + (255,))
-    # BOLD: a 2px stroke on the Didone Black so the rest of the
-    # masthead reads as heavy as bagarte's (the thin Didone
-    # strokes are thickened).
-    lt.text((4 + w1, 0), rest, font=TY.mast, fill=BLACK + (255,),
-            stroke_width=2, stroke_fill=BLACK + (255,))
+    lt.text((4, 0), title, font=TY.mastbold, fill=BLACK + (255,),
+            stroke_width=1, stroke_fill=BLACK + (255,))
     ink_top = layer.getbbox()[1]
     layer = layer.resize((996, 150), Image.LANCZOS)
     img.paste(layer, (MX, 24 - ink_top), layer)
